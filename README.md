@@ -31,12 +31,16 @@ There are generally four types of numbers: defined, `Infinity`, `-Infinity`, and
 `NaN` is what most undefined values are, but a couple special cases produce infinite values instead. `n / 0` produces `Infinity` for `n > 0`, and `-Infinity` for `n < 0`. For `n = 0`, this produces `NaN`. You can also create infinite values with the symbol `∞`, which can be typed with the shortcut `infty` or `infinity`. Finally, any number with a magnitude too large to be represented will be converted to `Infinity` or `-Infinity`.
 
 ### Negative 0
-There is also a cursed number that exists called `-0`, which behaves exactly like `0`, except when you put it in the denominator, it flips the sign of the infinite number produced. This means that `n / -0` produces `-Infinity` for `n > 0`. `-0` shows up as `0` in vanilla Desmos unless you enable the "Advanced floating point" option in [DesModder](https://www.desmodder.com/) that I mentioned before.
+There is also a cursed number that exists called `-0`, which behaves exactly like `0`, except when you put it in the denominator, it flips the sign of the infinite number produced. This means that `n / -0` produces `-Infinity` for `n > 0`. `-0` shows up as `0` in vanilla Desmos unless you enable the "Advanced floating point" option in [DesModder](https://www.desmodder.com/) that I mentioned before. Here are some ways to create `-0`:
+* `-0`
+* `0 * -1`
+* `0 / -1`
+* `-1 / ∞`
 
 ### Differentiating Undefined Numbers
 ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
 
-There are a few properties that can be used to differentiate between defined and undefined numbers. One very useful property is that `NaN` makes any conditional return false; i.e. `n = n` is true for any `n` except `NaN`. Infinite values are a bit harder to identify, but you can do so by checking `1 / n = 0`, which is only true for infinite values. To check the sign of the infinite value, you can just check `n > 0`, which is true for `Infinity`, but false for `-Infinity`.
+There are a few properties that can be used to differentiate between defined and undefined numbers. One very useful property is that `NaN` makes any conditional return false; i.e. `n = n` is true for any `n` except `NaN`. Infinite values can be identified by checking `|n| = ∞`, which is only true for infinite values. To check the sign of the infinite value, you can just check `n > 0`, which is true for `Infinity`, but false for `-Infinity`.
 
 ### Differentiating Negative 0
 ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
