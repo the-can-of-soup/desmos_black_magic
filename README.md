@@ -2,6 +2,14 @@
 
 Linked graph: [https://www.desmos.com/calculator/tlwypgbi04](https://www.desmos.com/calculator/tlwypgbi04)
 
+## Magic Levels
+In this document, sections that are describing black magic will have a difficulty rating:
+|Difficulty|Description|
+|-|-|
+|![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)|Easy to understand, fairly believable|
+|![Magic Level: Difficult](https://img.shields.io/badge/Magic_Level:-Difficult-orange?style=flat-square)|More complex, mildly mind-blowing|
+|![Magic Level: Insane](https://img.shields.io/badge/Magic_Level:-Insane-magenta?style=flat-square) (none made yet)|Obscure workarounds, completely unbelievable|
+
 ## Types in Desmos
 
 ### All Types
@@ -20,13 +28,12 @@ There are a lot of different types in Desmos. While most of the time we only use
 * Attempting to pass a value of the wrong type to a built-in function results in an error, although some built-in functions accept multiple different types.
 * Attempting to use two different types as the branches of a piecewise or the elements of a list results in an error.
 
-
-
-## Attributes
+### Attributes
 Some types have attributes that can be accessed with the `.attribute` syntax. Here are the ones I know:
-* `list.length` is equivalent to `length(list)` and returns the number of items in a list.
-* `point.x` and `point.y` retrieve the X and Y coordinates of a point.
-* `point3.x`, `point3.y`, and `point3.z` retrieve the X, Y, and Z coordinates of a 3D point.
+* `point.x` and `point.y` retrieve the X and Y coordinates of the point.
+* `point3.x`, `point3.y`, and `point3.z` retrieve the X, Y, and Z coordinates of the 3D point.
+* *Any built-in function* that accepts a list as the *only* argument can be called with attribute notation; e.g. `list.max` and `list.length` are equivalent to `max(list)` and `length(list)` respectively.
+* *Any built-in function* that accepts a list as the *first* argument can be called with attribute notation with parentheses; e.g. `list.join(5)` and `list.length()` are equivalent to `join(list, 5)` and `length(list)` respectively.
 
 
 
@@ -74,7 +81,7 @@ The way Desmos evaluates list substitutions is by iterating through all lists si
 > [!IMPORTANT]
 > List substitution can sometimes lead to accidental and weird results. One of the biggest instances of this is when using piecewise expressions. [Piecewise branches must all be of the same type](#general-restrictions), so when a list is used as a branch alongside another type, list substitution will trigger, causing the *other branch* to become a list. For example, the piecewise `{a < 5: 24, [39, 54]}` will output correctly as `[39, 54]` for `a >= 5`, but for `a < 5`, the output is actually `[24, 24]`. This is because Desmos first evaluates `{a < 5: 24, 39}` and then `{a < 5: 24, 54}`, and both resulted in `24`, making the output `[24, 24]`.
 
-Another example of undesired list substitution would be the expression `{[1, 2, 3] = 1: 4, 5}`, which appears to be comparing the list `[1, 2, 3]` to the number `1` to see if they are equal. However, what is actually happening is because different types cannot be compared, this is actually checking each item in the list to see if it's equal to `1`, and so the expression evaluates to `[4, 5, 5]` instead of the expected `5`. This is even easier to accidentally encounter if using variables, for example `{x = 1: 4, 5}` where `x = [1, 2, 3]` would produce the same result.
+Another example of undesired list substitution is the expression `{[1, 2, 3] = 1: 4, 5}`, which appears to be comparing the list `[1, 2, 3]` to the number `1` to see if they are equal. However, what is actually happening is because [non-numbers cannot be compared](#general-restrictions), this is actually checking each item in the list to see if it's equal to `1`, and so the expression evaluates to `[4, 5, 5]` instead of the expected `5`. This is even easier to accidentally encounter if using variables, for example `{x = 1: 4, 5}` where `x = [1, 2, 3]` would produce the same result.
 
 ### Differentiating Lists of Numbers From Numbers
 ![Magic Level: Difficult](https://img.shields.io/badge/Magic_Level:-Difficult-orange?style=flat-square)
@@ -83,6 +90,8 @@ It is very difficult to differentiate types because passing the wrong type to a 
 * The `join()` function will accept *any type* except actions.
 * Due to list substitution, it is valid syntax to compare a number to a list, and it is also valid to compare a list to a list.
 
-The first step is to detect any lists that don't have exactly 1 item, which is fairly easy. We can use `join([], x)` to convert the value to a list. After converting to a list, if `x` is a number, we will get the list `[x]`. If `x` is a list, we will just get `x` back again. We then check the length of this list. If it is anything but 1, we immediately know that `x` is a list. So our function is: `isListOfNumbers(x) = {join([], x).length = 1: ..., 1}`.
+The first step is to detect any lists that don't have exactly 1 item, which is fairly easy. We can use `join([], x)` to convert the value to a list. After converting to a list, if `x` is a number, we will get the list `[x]`. If `x` is a list, we will just get `x` back again. We then check the length of this list. If it is anything but 1, we immediately know that `x` is a list. So our function so far is: `isListOfNumbers(x) = {join([], x).length = 1: ..., 1}`.
 
-The next step is to address the `...` in our function. If the length of `join([], x)` is 1, we know that `x` is either a number or a list of length 1. Differentiating the two is the hardest part of this function. For this, I use list substitution. If `x` is a number, evaluating `{x = [0, 0]: 0, 0}` will substitute each element of the list `[0, 0]` into the condition, and end up with two responses. However, if `x` is a list of length 1, `x` will now be *shorter than `[0, 0]`*, and so the Desmos list substitution algorithm will only substitute values until `x` is exhausted. Therefore, we only get one response, checking if the first element in `x` equals `0`. So the final step is to take this result and check its length. If it is `1`, we know `x` is a list, and if it is `2`, we know `x` is a number. So our final function is: `isListOfNumbers(x) = {join([], x).length = 1: {{x = [0, 0]: 0, 0}.length = 2: 0, 1}, 1}`.
+The next step is to address the `...` in our function. If the length of `join([], x)` is 1, we know that `x` is either a number or a list of length 1. Differentiating the two is the hardest part of this function. For this, I use list substitution. If `x` is a number, evaluating `{x = [0, 0]: 0, 0}` will substitute each element of the list `[0, 0]` into the condition, and end up with two responses. However, if `x` is a list of length 1, `x` will now be *shorter than `[0, 0]`*, and so the Desmos list substitution algorithm will only substitute values until `x` is exhausted. Therefore, we only get one response, checking if the first element in `x` equals `0`. So the final step is to take this result and check its length. If it is `1`, we know `x` is a list, and if it is `2`, we know `x` is a number.
+
+So our final function is: `isListOfNumbers(x) = {join([], x).length = 1: {{x = [0, 0]: 0, 0}.length = 2: 0, 1}, 1}`.
