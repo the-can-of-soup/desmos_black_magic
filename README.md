@@ -7,37 +7,46 @@ If you need help related to anything in this document, you can [create a GitHub 
 
 ### Magic Levels
 In this document, sections that are describing black magic will have a difficulty rating:
-|Difficulty|Description|
-|-|-|
-|![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)|Easy to understand, fairly believable|
-|![Magic Level: Difficult](https://img.shields.io/badge/Magic_Level:-Difficult-orange?style=flat-square)|More complex, mildly mind-blowing|
-|![Magic Level: Insane](https://img.shields.io/badge/Magic_Level:-Insane-magenta?style=flat-square) (none made yet)|Obscure workarounds, completely unbelievable|
+| Difficulty                                                                                                         | Description                                                               |
+|--------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)                       | Easy to understand, fairly believable                                     |
+| ![Magic Level: Difficult](https://img.shields.io/badge/Magic_Level:-Difficult-orange?style=flat-square)            | More complex, mildly mind-blowing                                         |
+| ![Magic Level: Insane](https://img.shields.io/badge/Magic_Level:-Insane-magenta?style=flat-square) (none made yet) | Obscure workarounds, you may develop a strong urge to star the repository |
 
 ## Types in Desmos
 
 ### All Types
 There are a lot of different types in Desmos. While most of the time we only use numbers, some other types can sometimes be very useful. Here is the list of types I know of, each with an example expression to produce them, sorted from easiest to hardest to manipulate:
-* Number, `1 + 2`
-* List, `[1, 2, 3]`
-* Point, `(1, 2)`
-* 3D Point, `(1, 2, 3)`
-* Tone, `tone(440)`
-* Polygon, `polygon([(1, 2), (3, 4), (5, 6)])`
-* Color, `rgb(255, 0, 0)`
-* Action, `a -> 1`
+
+| Type         | Example                             | Can be stored in lists?  | Can use [method notation](#method-notation)? | Supported [Attributes](#attribute-notation) | Notes |
+|--------------|-------------------------------------|--------------------------|----------------------------------------------|---------------------------------------------|-------|
+| Number       | `1 + 2`                             | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     |                                             |       |
+| List         | `[1, 2, 3]`                         | <ul><li>- [ ] </li></ul> | <ul><li>- [x] </li></ul>                     |                                             |       |
+| Point        | `(1, 2)`                            | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     | `.x`, `.y`                                  |       |
+| 3D Point     | `(1, 2, 3)`                         | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     | `.x`, `.y`, `.z`                            |       |
+| Distribution | `normaldist(0, 1)`                  | <ul><li>- [x] </li></ul> | <ul><li>- [x] </li></ul>                     |                                             |       |
+| Tone         | `tone(440)`                         | <ul><li>- [x] </li></ul> | <ul><li>- [x] </li></ul>                     |                                             |       |
+| Polygon      | `polygon([(1, 2), (3, 4), (5, 6)])` | <ul><li>- [x] </li></ul> | <ul><li>- [x] </li></ul>                     |                                             |       |
+| Color        | `rgb(255, 0, 0)`                    | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     |                                             | When displaying a color or list of colors, Desmos will show a fake `undefined` text and error. To prevent this, simply assign the color or list of colors to a variable. |
+| Action       | `a -> 1`                            | <ul><li>- [ ] </li></ul> | N/A                                          |                                             | It is unknown whether method notation is supported for actions because there are no known functions that accept an action to test it with. |
 
 ### General Restrictions
 * Attempting to use a non-number value in any comparison results in an error (before applying [list substitution](#list-substitution)).
 * Attempting to pass a value of the wrong type to a built-in function results in an error, although some built-in functions accept multiple different types.
 * Attempting to use two different types as the branches of a piecewise or the elements of a list results in an error.
 
-### Attribute & Method Notation
-Some types have attributes that can be accessed with the `.attribute` syntax. Additionally, some built-in functions can be called with the `arg1.method(...)` syntax, which is equivalent to `method(arg1, ...)`. Methods that only take one argument may optionally be called without parentheses like `arg1.method`, which is equivalent to `method(arg1)`.
-
-Here is the list of attributes and methods that I know of:
+### Attribute Notation
+Some types have attributes that can be accessed with the `.attribute` syntax. Here is the list of attributes that I know of:
 * `point.x` and `point.y` retrieve the X and Y coordinates of the point.
 * `point3.x`, `point3.y`, and `point3.z` retrieve the X, Y, and Z coordinates of the 3D point.
-* *All built-in functions* that accept a list as the first argument can be used as methods of a list; e.g. `list.max` and `list.join(5, 6)` are equivalent to `max(list)` and `join(list, 5, 6)` respectively.
+
+### Method Notation
+Some types can be used to call built-in functions with `value.method(...)` syntax, which is equivalent to `method(value, ...)`. Methods that only take one argument may optionally be called without parentheses like `value.method`, which is equivalent to `method(value)`. See [the table above](#all-types) for the list of types that support this. Here are some examples:
+* `list.length` = `length(list)`
+* `list.max()` = `max(list)`
+* `list.join(5, 6)` = `join(list, 5, 6)`
+* `distribution.pdf(0.5)` = `pdf(distribution, 0.5)`
+* `tone(220).join(tone(440), tone(880))` = `join(tone(220), tone(440), tone(880))`
 
 
 
