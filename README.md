@@ -28,12 +28,13 @@ There are a lot of different types in Desmos. While most of the time we only use
 * Attempting to pass a value of the wrong type to a built-in function results in an error, although some built-in functions accept multiple different types.
 * Attempting to use two different types as the branches of a piecewise or the elements of a list results in an error.
 
-### Attributes
-Some types have attributes that can be accessed with the `.attribute` syntax. Here are the ones I know:
+### Attribute & Method Notation
+Some types have attributes that can be accessed with the `.attribute` syntax. Additionally, some built-in functions can be called with the `arg1.method(...)` syntax, which is equivalent to `method(arg1, ...)`. Methods that only take one argument may optionally be called without parentheses like `arg1.method`, which is equivalent to `method(arg1)`.
+
+Here is the list of attributes and methods that I know of:
 * `point.x` and `point.y` retrieve the X and Y coordinates of the point.
 * `point3.x`, `point3.y`, and `point3.z` retrieve the X, Y, and Z coordinates of the 3D point.
-* *Any built-in function* that accepts a list as the *only* argument can be called with attribute notation; e.g. `list.max` and `list.length` are equivalent to `max(list)` and `length(list)` respectively.
-* *Any built-in function* that accepts a list as the *first* argument can be called with attribute notation with parentheses; e.g. `list.join(5)` and `list.length()` are equivalent to `join(list, 5)` and `length(list)` respectively.
+* *All built-in functions* that accept a list as the first argument are methods; e.g. `list.max` and `list.join(5, 6)` are equivalent to `max(list)` and `join(list, 5, 6)` respectively.
 
 
 
@@ -51,6 +52,8 @@ There is also a cursed number that exists called `-0`, which behaves exactly lik
 * `0 * -1`
 * `0 / -1`
 * `-1 / ∞`
+
+Interestingly, `sgn(n)`, `sign(n)`, and `signum(n)` will return `n` when `n = 0`. This means that `sgn(-0)` is `-0`.
 
 ### Differentiating Undefined Numbers
 ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
