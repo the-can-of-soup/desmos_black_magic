@@ -1,4 +1,4 @@
-# Desmos Black Magic
+# Desmos Black Magic & Undocumented Features
 
 Linked graph: [https://www.desmos.com/calculator/tlwypgbi04](https://www.desmos.com/calculator/tlwypgbi04)
 
@@ -19,6 +19,14 @@ There are a lot of different types in Desmos. While most of the time we only use
 * Attempting to use a non-number value in any comparison results in an error (before applying [list substitution](#list-substitution)).
 * Attempting to pass a value of the wrong type to a built-in function results in an error, although some built-in functions accept multiple different types.
 * Attempting to use two different types as the branches of a piecewise or the elements of a list results in an error.
+
+
+
+## Attributes
+Some types have attributes that can be accessed with the `.attribute` syntax. Here are the ones I know:
+* `list.length` is equivalent to `length(list)` and returns the number of items in a list.
+* `point.x` and `point.y` retrieve the X and Y coordinates of a point.
+* `point3.x`, `point3.y`, and `point3.z` retrieve the X, Y, and Z coordinates of a 3D point.
 
 
 
