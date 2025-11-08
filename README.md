@@ -2,6 +2,27 @@
 
 Linked graph: [https://www.desmos.com/calculator/tlwypgbi04](https://www.desmos.com/calculator/tlwypgbi04)
 
+### Table of Contents
+* [Desmos Black Magic & Undocumented Features](#desmos-black-magic--undocumented-features)
+  * [Table of Contents](#table-of-contents)
+  * [Help](#help)
+  * [Magic Levels](#magic-levels)
+* [Types in Desmos](#types-in-desmos)
+  * [All Types](#all-types)
+  * [General Restrictions](#general-restrictions)
+  * [Attribute Notation](#attribute-notation)
+  * [Method Notation](#method-notation)
+* [Numbers](#numbers)
+  * [Types of Numbers](#types-of-numbers)
+  * [Producing Undefined Numbers](#producing-undefined-numbers)
+  * [Negative 0](#negative-0)
+  * [Differentiating Undefined Numbers](#differentiating-undefined-numbers) ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
+  * [Differentiating Negative 0](#differentiating-negative-0) ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
+* [Lists](#lists)
+  * [List Restrictions](#list-restrictions)
+  * [List Substitution](#list-substitution)
+  * [Differentiating Lists of Numbers From Numbers](#differentiating-lists-of-numbers-from-numbers) ![Magic Level: Difficult](https://img.shields.io/badge/Magic_Level:-Difficult-orange?style=flat-square)
+
 ### Help
 If you need help related to anything in this document, you can [create a GitHub issue](https://github.com/the-can-of-soup/desmos_black_magic/issues).
 
@@ -50,7 +71,7 @@ Some types can be used to call built-in functions with `value.method(...)` synta
 
 
 
-## Number Magic
+## Numbers
 
 ### Types of Numbers
 There are generally four types of numbers: defined, `Infinity`, `-Infinity`, and `NaN`. All types except defined show as `undefined` in vanilla Desmos, but their true type can be seen with the "Visual > Better Evaluation View > Advanced floating point" option in the [DesModder extension](https://www.desmodder.com/).
@@ -79,7 +100,7 @@ The only method I know to differentiate `0` and `-0` is by dividing them from a 
 
 
 
-## List Magic
+## Lists
 
 ### List Restrictions
 There are a few restrictions on lists in Desmos:
