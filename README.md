@@ -122,7 +122,7 @@ Another example of undesired list substitution is the expression `{[1, 2, 3] = 1
 ### Differentiating Lists of Numbers From Numbers
 ![Magic Level: Difficult](https://img.shields.io/badge/Magic_Level:-Difficult-orange?style=flat-square)
 
-It is very difficult to differentiate types because passing the wrong type to a function anywhere, even in branches that are never used, immediately makes the entire equation result in an error. There are two key properties that I used to achieve this:
+We want to create a function `isListOfNumbers(x)` that returns `1` if `x` is a list of numbers, and returns `0` if `x` is a number. It is very difficult to differentiate types because passing the wrong type to a function anywhere, even in branches that are never used, immediately makes the entire equation result in an error. There are two key properties that I used to achieve this:
 * The `join()` function will accept *any type* except actions.
 * Due to list substitution, it is valid syntax to compare a number to a list, and it is also valid to compare a list to a list.
 
