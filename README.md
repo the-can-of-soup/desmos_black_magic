@@ -2,7 +2,10 @@
 
 Linked graph: [https://www.desmos.com/calculator/tlwypgbi04](https://www.desmos.com/calculator/tlwypgbi04)
 
-## Magic Levels
+### Help
+If you need help related to anything in this document, you can [create a GitHub issue](https://github.com/the-can-of-soup/desmos_black_magic/issues).
+
+### Magic Levels
 In this document, sections that are describing black magic will have a difficulty rating:
 |Difficulty|Description|
 |-|-|
@@ -34,7 +37,7 @@ Some types have attributes that can be accessed with the `.attribute` syntax. Ad
 Here is the list of attributes and methods that I know of:
 * `point.x` and `point.y` retrieve the X and Y coordinates of the point.
 * `point3.x`, `point3.y`, and `point3.z` retrieve the X, Y, and Z coordinates of the 3D point.
-* *All built-in functions* that accept a list as the first argument are methods; e.g. `list.max` and `list.join(5, 6)` are equivalent to `max(list)` and `join(list, 5, 6)` respectively.
+* *All built-in functions* that accept a list as the first argument can be used as methods of a list; e.g. `list.max` and `list.join(5, 6)` are equivalent to `max(list)` and `join(list, 5, 6)` respectively.
 
 
 
