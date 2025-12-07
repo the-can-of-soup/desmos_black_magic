@@ -28,11 +28,11 @@ If you need help related to anything in this document, you can [create a GitHub 
 
 ### Magic Levels
 In this document, sections that are describing black magic will have a difficulty rating:
-| Difficulty                                                                                                         | Description                                                               |
-|--------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
-| ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)                       | Easy to understand, fairly believable                                     |
-| ![Magic Level: Difficult](https://img.shields.io/badge/Magic_Level:-Difficult-orange?style=flat-square)            | More complex, mildly mind-blowing                                         |
-| ![Magic Level: Insane](https://img.shields.io/badge/Magic_Level:-Insane-magenta?style=flat-square) (none made yet) | Obscure workarounds, you may develop a strong urge to star the repository |
+| Difficulty                                                                                                         | Description                                      |
+|--------------------------------------------------------------------------------------------------------------------|--------------------------------------------------|
+| ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)                       | Easy to understand, fairly believable            |
+| ![Magic Level: Difficult](https://img.shields.io/badge/Magic_Level:-Difficult-orange?style=flat-square)            | More complex, mildly mind-blowing                |
+| ![Magic Level: Insane](https://img.shields.io/badge/Magic_Level:-Insane-magenta?style=flat-square) (none made yet) | Obscure workarounds, why on earth does this work |
 
 ## Types in Desmos
 
