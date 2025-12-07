@@ -39,17 +39,18 @@ In this document, sections that are describing black magic will have a difficult
 ### All Types
 There are a lot of different types in Desmos. While most of the time we only use numbers, some other types can sometimes be very useful. Here is the list of types I know of, each with an example expression to produce them, sorted from easiest to hardest to manipulate:
 
-| Type         | Example                             | Can be stored in lists?  | Can use [method notation](#method-notation)? | Supported [Attributes](#attribute-notation) | Notes |
-|--------------|-------------------------------------|--------------------------|----------------------------------------------|---------------------------------------------|-------|
-| Number       | `1 + 2`                             | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     |                                             |       |
-| List         | `[1, 2, 3]`                         | <ul><li>- [ ] </li></ul> | <ul><li>- [x] </li></ul>                     |                                             |       |
-| Point        | `(1, 2)`                            | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     | `.x`, `.y`                                  |       |
-| 3D Point     | `(1, 2, 3)`                         | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     | `.x`, `.y`, `.z`                            |       |
-| Distribution | `normaldist(0, 1)`                  | <ul><li>- [x] </li></ul> | <ul><li>- [x] </li></ul>                     |                                             |       |
-| Tone         | `tone(440)`                         | <ul><li>- [x] </li></ul> | <ul><li>- [x] </li></ul>                     |                                             |       |
-| Polygon      | `polygon([(1, 2), (3, 4), (5, 6)])` | <ul><li>- [x] </li></ul> | <ul><li>- [x] </li></ul>                     |                                             |       |
-| Color        | `rgb(255, 0, 0)`                    | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     |                                             | When displaying a color or list of colors, Desmos will show a fake `undefined` text and error. To prevent this, simply assign the color or list of colors to a variable. |
-| Action       | `a -> 1`                            | <ul><li>- [ ] </li></ul> | N/A                                          |                                             | It is unknown whether method notation is supported for actions because there are no known functions that accept an action to test it with. |
+| Type           | Example                             | Can be stored in lists?  | Can use [method notation](#method-notation)? | Supported [Attributes](#attribute-notation) | Notes |
+|----------------|-------------------------------------|--------------------------|----------------------------------------------|---------------------------------------------|-------|
+| Number         | `2`                                 | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     | `.real`, `.imag`                            |       |
+| Complex Number | `3 - 2i`                            | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     | `.real`, `.imag`                            | These can only be created when "Complex Mode" is enabled in the graph's settings. |
+| List           | `[1, 2, 3]`                         | <ul><li>- [ ] </li></ul> | <ul><li>- [x] </li></ul>                     |                                             |       |
+| Point          | `(1, 2)`                            | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     | `.x`, `.y`                                  |       |
+| 3D Point       | `(1, 2, 3)`                         | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     | `.x`, `.y`, `.z`                            |       |
+| Distribution   | `normaldist(0, 1)`                  | <ul><li>- [x] </li></ul> | <ul><li>- [x] </li></ul>                     |                                             |       |
+| Tone           | `tone(440)`                         | <ul><li>- [x] </li></ul> | <ul><li>- [x] </li></ul>                     |                                             |       |
+| Polygon        | `polygon([(1, 2), (3, 4), (5, 6)])` | <ul><li>- [x] </li></ul> | <ul><li>- [x] </li></ul>                     |                                             |       |
+| Color          | `rgb(255, 0, 0)`                    | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     |                                             | When displaying a color or list of colors, Desmos will show a fake `undefined` text and error. To prevent this, simply assign the color or list of colors to a variable. |
+| Action         | `a -> 1`                            | <ul><li>- [ ] </li></ul> | N/A                                          |                                             | It is unknown whether method notation is supported for actions because there are no known functions that accept an action to test it with. |
 
 ### General Restrictions
 * Attempting to use a non-number value in any comparison results in an error (before applying [list substitution](#list-substitution)).
@@ -60,6 +61,9 @@ There are a lot of different types in Desmos. While most of the time we only use
 Some types have attributes that can be accessed with the `.attribute` syntax. Here is the list of attributes that I know of:
 * `point.x` and `point.y` retrieve the X and Y coordinates of the point.
 * `point3.x`, `point3.y`, and `point3.z` retrieve the X, Y, and Z coordinates of the 3D point.
+* `complex.real` and `complex.imag` retrieve the real and imaginary components of a complex number. These also work for regular numbers if "Complex Mode" is enabled in the graph settings.
+
+  This may look like [method notation](#method-notation) because there exist functions `real()` and `imag()` that do the same thing, but this is actually attribute notation because it doesn't follow the other rules of method notation.
 
 ### Method Notation
 Some types can be used to call built-in functions with `value.method(...)` syntax, which is equivalent to `method(value, ...)`. Methods that only take one argument may optionally be called without parentheses like `value.method`, which is equivalent to `method(value)`. See [the table above](#all-types) for the list of types that support this. Here are some examples:
@@ -80,13 +84,29 @@ There are generally four types of numbers: defined, `Infinity`, `-Infinity`, and
 `NaN` is what most undefined values are, but a couple special cases produce infinite values instead. `n / 0` produces `Infinity` for `n > 0`, and `-Infinity` for `n < 0`. For `n = 0`, this produces `NaN`. `log(0)` produces `-Infinity`. You can also create infinite values with the symbol `∞`, which can be typed with the shortcut `infty` or `infinity`. Finally, any number with a magnitude too large to be represented will be converted to `Infinity` or `-Infinity`.
 
 ### Negative 0
-There is also a cursed number that exists called `-0`, which behaves exactly like `0`, except when you put it in the denominator, it flips the sign of the infinite number produced. This means that `n / -0` produces `-Infinity` for `n > 0`. `-0` shows up as `0` in vanilla Desmos unless you enable the "Advanced floating point" option in [DesModder](https://www.desmodder.com/) that I mentioned before. Here are some ways to create `-0`:
+There is also a cursed number that exists called `-0`, which behaves exactly like `0`, except when you put it in the denominator of a division, it flips the sign of the infinite number produced. This means that `n / -0` produces `-Infinity` for `n > 0`. `-0` shows up as `0` in vanilla Desmos unless you enable the "Advanced floating point" option in [DesModder](https://www.desmodder.com/) that I mentioned before. Here are some ways to create `-0`:
 * `-0`
 * `0 * -1`
 * `0 / -1`
 * `-1 / ∞`
+* `1 / -∞`
 
-Interestingly, `sgn(n)`, `sign(n)`, and `signum(n)` will return `n` when `n = 0`. This means that `sgn(-0)` is `-0`.
+Here are some more properties of `-0`:
+* `sgn(n)`, `sign(n)`, and `signum(n)` will return `n` when `n = 0`. This means that `sgn(-0)` is `-0`.
+* `-0 + 0` returns `0`, but `-0 + -0` and `-0 - 0` return `-0`.
+* `-0 * n` returns `-0` for all nonnegative `n` and `0` for all negative `n`. `-0` counts as negative here.
+* With "Complex Mode" enabled, `(-0).real` returns `-0`.
+* With "Complex Mode" enabled, `(-0 + ni).real` returns `0` for all nonnegative `n` and `-0` for all negative `n`. `-0` counts as negative here.
+* Reading a variable that has a slider and is set as `-0` will always return `0`.
+
+### Complex Numbers
+Complex numbers have a real and imaginary component, both of which are numbers. This means the real and imaginary components can have separate number types. However, there are some weird behaviors I have noticed that I can't fully explain. First, whenever any undefined number is expected to be in the imaginary component, or `NaN` is expected in the real component, the entire complex number becomes `NaN - NaN i`. This implies that the sign of the imaginary component is stored separately from the imaginary component itself, as `-NaN` isn't an actual value that can exist. When `.imag` is used, `NaN` is returned, confirming that `-NaN` doesn't exist.
+
+However, infinite real components appear to work properly. This means that `∞ + i` works as expected, but `0/0 + i` and `∞i` just collapse to `NaN - NaN i`.
+
+Here are some properties of complex numbers:
+* `0 * z` and `-0 * z` will return a complex number, even though it would make sense to return a regular number.
+* `z / ∞` and `-z / -∞` will return the complex number `0`, but unlike regular numbers, `z / -∞` and `-z / ∞` will also return the complex number `0` (instead of `-0`).
 
 ### Differentiating Undefined Numbers
 ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
