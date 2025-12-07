@@ -95,10 +95,11 @@ Here are some more properties of `-0`:
 * `-0 = 0` is true.
 * `-0 + 0` returns `0`, but `-0 + -0` and `-0 - 0` return `-0`.
 * `-0 * n` returns `-0` for all nonnegative `n` and `0` for all negative `n`. `-0` counts as negative here.
+* Reading a variable that has a slider and is set as `-0` will return `0`.
 * `sgn(n)`, `sign(n)`, and `signum(n)` will return `n` when `n = 0`. This means that `sgn(-0)` is `-0`.
 * With "Complex Mode" enabled, `(-0).real` returns `-0`.
-* With "Complex Mode" enabled, `(-0 + ni).real` returns `0` for all nonnegative `n` and `-0` for all negative `n`. `-0` counts as negative here.
-* Reading a variable that has a slider and is set as `-0` will always return `0`.
+* With "Complex Mode" enabled, `-0 + ni` returns `0 + ni` for all nonnegative `n` and `-0 + ni` for all negative `n`. `-0` counts as negative here.
+* With "Complex Mode" enabled, `-0 * i` returns `-0 - 0i`.
 
 ### Complex Numbers
 Complex numbers have a real and imaginary component, both of which are numbers. This means the real and imaginary components can have separate number types. However, there are some weird behaviors I have noticed that I can't fully explain. First, whenever any undefined number is expected to be in the imaginary component, or `NaN` is expected in the real component, the entire complex number becomes `NaN - NaN i`. This implies that the sign of the imaginary component is stored separately from the imaginary component itself, as `-NaN` isn't an actual value that can exist. When `.imag` is used, `NaN` is returned, confirming that `-NaN` doesn't exist.
