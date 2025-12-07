@@ -92,9 +92,10 @@ There is also a cursed number that exists called `-0`, which behaves exactly lik
 * `1 / -∞`
 
 Here are some more properties of `-0`:
-* `sgn(n)`, `sign(n)`, and `signum(n)` will return `n` when `n = 0`. This means that `sgn(-0)` is `-0`.
+* `-0 = 0` is true.
 * `-0 + 0` returns `0`, but `-0 + -0` and `-0 - 0` return `-0`.
 * `-0 * n` returns `-0` for all nonnegative `n` and `0` for all negative `n`. `-0` counts as negative here.
+* `sgn(n)`, `sign(n)`, and `signum(n)` will return `n` when `n = 0`. This means that `sgn(-0)` is `-0`.
 * With "Complex Mode" enabled, `(-0).real` returns `-0`.
 * With "Complex Mode" enabled, `(-0 + ni).real` returns `0` for all nonnegative `n` and `-0` for all negative `n`. `-0` counts as negative here.
 * Reading a variable that has a slider and is set as `-0` will always return `0`.
