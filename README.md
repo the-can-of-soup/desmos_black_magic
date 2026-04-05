@@ -24,6 +24,7 @@ Linked graph: [https://www.desmos.com/calculator/tlwypgbi04](https://www.desmos.
   * [Differentiating Lists of Numbers From Numbers](#differentiating-lists-of-numbers-from-numbers) ![Magic Level: Difficult](https://img.shields.io/badge/Magic_Level:-Difficult-orange?style=flat-square)
 * [Points & 3D Points](#points--3d-points)
   * [Converting Number/Point Inputs to Points](#converting-numberpoint-inputs-to-points) ![Magic Level: Insane](https://img.shields.io/badge/Magic_Level:-Insane-magenta?style=flat-square)
+  * [Converting Number/Point Inputs to Numbers](#converting-numberpoint-inputs-to-numbers) ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
 
 ### Help
 If you need help related to anything in this document, you can [create a GitHub issue](https://github.com/the-can-of-soup/desmos_black_magic/issues).
