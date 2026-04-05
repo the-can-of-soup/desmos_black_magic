@@ -22,17 +22,19 @@ Linked graph: [https://www.desmos.com/calculator/tlwypgbi04](https://www.desmos.
   * [List Restrictions](#list-restrictions)
   * [List Substitution](#list-substitution)
   * [Differentiating Lists of Numbers From Numbers](#differentiating-lists-of-numbers-from-numbers) ![Magic Level: Difficult](https://img.shields.io/badge/Magic_Level:-Difficult-orange?style=flat-square)
+* [Points & 3D Points](#points--3d-points)
+  * [Converting Number/Point Inputs to Points](#converting-numberpoint-inputs-to-points) ![Magic Level: Insane](https://img.shields.io/badge/Magic_Level:-Insane-magenta?style=flat-square)
 
 ### Help
 If you need help related to anything in this document, you can [create a GitHub issue](https://github.com/the-can-of-soup/desmos_black_magic/issues).
 
 ### Magic Levels
 In this document, sections that are describing black magic will have a difficulty rating:
-| Difficulty                                                                                                         | Description                                      |
-|--------------------------------------------------------------------------------------------------------------------|--------------------------------------------------|
-| ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)                       | Easy to understand, fairly believable            |
-| ![Magic Level: Difficult](https://img.shields.io/badge/Magic_Level:-Difficult-orange?style=flat-square)            | More complex, mildly mind-blowing                |
-| ![Magic Level: Insane](https://img.shields.io/badge/Magic_Level:-Insane-magenta?style=flat-square) (none made yet) | Obscure workarounds, why on earth does this work |
+| Difficulty                                                                                              | Description                                      |
+|---------------------------------------------------------------------------------------------------------|--------------------------------------------------|
+| ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)            | Easy to understand, fairly believable            |
+| ![Magic Level: Difficult](https://img.shields.io/badge/Magic_Level:-Difficult-orange?style=flat-square) | More complex, mildly mind-blowing                |
+| ![Magic Level: Insane](https://img.shields.io/badge/Magic_Level:-Insane-magenta?style=flat-square)      | Obscure workarounds, why on earth does this work |
 
 ## Types in Desmos
 
@@ -153,3 +155,50 @@ The first step is to detect any lists that don't have exactly 1 item, which is f
 The next step is to address the `...` in our function. If the length of `join([], x)` is 1, we know that `x` is either a number or a list of length 1. Differentiating the two is the hardest part of this function. For this, I use list substitution. If `x` is a number, evaluating `{x = [0, 0]: 0, 0}` will substitute each element of the list `[0, 0]` into the condition, and end up with two responses. However, if `x` is a list of length 1, `x` will now be *shorter than `[0, 0]`*, and so the Desmos list substitution algorithm will only substitute values until `x` is exhausted. Therefore, we only get one response, checking if the first element in `x` equals `0`. So the final step is to take this result and check its length. If it is `1`, we know `x` is a list, and if it is `2`, we know `x` is a number.
 
 So our final function is: `isListOfNumbers(x) = {join([], x).length = 1: {{x = [0, 0]: 0, 0}.length = 2: 0, 1}, 1}`.
+
+
+
+## Points & 3D Points
+
+### Converting Number/Point Inputs to Points
+![Magic Level: Insane](https://img.shields.io/badge/Magic_Level:-Insane-magenta?style=flat-square)
+
+We want to allow functions such as, for example, `getCoordinate(p,n) = {n=0:p.x, n=1:p.y, n=2:p.z}` to not error even with numerical inputs of `p`, to prevent errors in functions that could take either type. Even if functions do `{isPoint(x)=1:getCoordinate(x,n), ...}`, they would still error with numerical inputs, because Desmos does not care if the branch doesn't trigger; it will still error due to getting `.x` of a number. I ran into this problem myself working on my [video renderer](https://www.desmos.com/calculator/9jfamqnyic). Naturally, the solution would be a function `convertTo3DPoint(x)` that leaves points unchanged, but converts numbers into points; this would satisfy the type checker for numerical inputs by converting them to points. This entry will implement that function.
+
+> [!NOTE]
+> We do not care what the contents of the point result is if the input is a number, as we simply want to satisfy the type checker.
+> Consequently, the result in this case will be garbage data.
+
+> [!NOTE]
+> There are two versions of this function; one for normal points, and one for 3D points.
+> I will describe my process implementing only the 3D point version here, but the normal point version is also given at the end.
+
+There are two key features that I exploit for this implementation. The first is the fact that the dot operator works on any combination of point/number inputs. This is because for points `a` and `b`, `a * b` gives the dot product of `a` and `b`, whereas for point `a` and number `n`, `a * n` or `n * a` gives `a` dilated by `n` (and the case with two numbers is trivial). Note that this is only true for the dot operator, and not the implicit multiplication operator; i.e., for points `a` and `b`, `ab` is not a valid operation, but `a * b` is.
+
+We immediately exploit this by writing `(1,0,0) * x`, `(0,1,0) * x`, and `(0,0,1) * x`. For point `x`, this will calculate the dot product, thus yielding the X, Y, and Z components of `x` respectively. For number `x`, this will give the points `(x,0,0)`, `(0,x,0)`, and `(0,0,x)` respectively. Notably, we now have swapped the types; number inputs will yield points, and point inputs will yield numbers.
+
+The second feature is that the absolute value operator works on both points and numbers. For numbers, it returns their magnitude, and for points, it returns the magnitude of the vector with their coordinates. We now will take our three results from before and take their absolute value; `|(1,0,0) * x|`, `|(0,1,0) * x|`, and `|(0,0,1) * x|`. If `x` is a point, these will be the absolute values of the components of `x`, but if `x` is a number, these will be the absolute value of that number.
+
+Our obstacle to success now is determining the sign of the three components without causing errors for number inputs, and believe me, this is VERY difficult to solve, hence the Insane magic level.
+
+My first breakthrough was that because `∞ - ∞` returns `NaN`, I could use `∞` in the dot products to determine difference in sign. For example, if we use `|(∞,∞,0) * x|`, for point `x`, this will return `NaN` if and only if the sign of the X and Y components of `x` are different; otherwise, it will return `∞` (excepting zero cases mentioned below). This is because we are effectively multiplying the X and Y components by `∞` and then adding them together. If they have the same sign, this becomes `∞ + ∞` or `-∞ - ∞`, both of which result in `∞` after the absolute value takes effect. However, and this is the key part, if they have a _different_ sign, this becomes `∞ - ∞` or `-∞ + ∞`, _both of which result in `NaN`_, and this of course propagates through the absolute value as well. If exactly one of the X or Y components are `0`, the result is `∞`, and if they both are `0`, the result is `0`. (For number `x`, the result after absolute value is `∞` for nonzero values or `0` for zero.)
+
+> [!NOTE]
+> The above trick is not used in the final solution, but I included it here for completeness.
+
+Using this trick, we can deduce whether the X and Y components have the same sign, and whether the X and Z components have the same sign. Now, the final piece of the puzzle is identifying what the sign of the X component is. Literally 2 possible states. It couldn't _possibly_ be that hard to differentiate between the two. Right? **WRONG**. This problem took me a very long time to solve.
+
+The solution is to use `-0`. Yes. You heard me right. MORE SHENANIGANS. If we use `(0,0,0) * x`, for point `x`, this will give `-0` if all three components are negative; otherwise, it will give `0`. This is because when each `0` is multiplied by a component of `x`, it becomes `0` if that component is positive, or `-0` if it is negative. When added, the only way addition can produce `-0` is by adding `-0 - 0`. All other combinations of signs of `0` being added result in `0`. This gives that behavior of `-0` if all three components are negative or `0` otherwise. (For number `x`, this gives a 3D point, and that's all that matters.)
+
+Now, take that previous result and apply `* x` to get `((0,0,0) * x) * x`. For point `x`, if the previous result was `0` (as is always the case except when all components are negative), then this will result in a 3D point where each component is given by `0` times the component in `x`. This means that each resulting component is `0` if the original component was nonnegative, otherwise it is `-0`. We can use this to determine the sign!! But, remember that the previous result could be `-0` in the case that all components are negative. In this case, the result is entirely flipped by the negative there, so the final result is `(0,0,0)` instead of the desired `(-0,-0,-0)`. (For number `x`, the result is a 3D point because we just scale the previous result by `x`, and that's again all that matters.)
+
+There is one final edge case. The only issue now is if `x` is a point with all three components negative, because that gets read as all three components positive (due to the second-to-last result being `-0` in that case instead of `0`). The solution to this is simple, yet ingeniously effective. I couldn't have found it without help from [`<div></div>`](https://github.com/Dicuo/). Show them support.
+
+The solution is to detect this edge case by detecting when `(0,0,0) * x` is `-0` safely. The way this is done is with the expression `(x - x) * x`. For point `x`, this simplifies to `(0,0,0) * x`, giving the same result. But for number `x`, this simplifies to `0 * x`, _giving a number in this case as well!!_ This is the key part. The `(0,0,0) * x` expression would give a point for number `x`, so it wasn't safely usable, but the new `(x - x) * x` version returns a number _no matter what_. Now, we just simply multiply our expression from before `((0,0,0) * x) * x` by `(x - x) * x` (so that in the edge case, it is multiplied by `-0`, thus properly reversing the signs). This leaves us with `(((0,0,0) * x) * x) * ((x - x) * x)`, which **will properly return a point where each component is `0` or `-0` for a respective positive or negative component in `x` when `x` is a point**. (For `0` components in `x`, they are treated as positive, but `-0` is treated as negative, preserving this difference. This can be verified by testing zeroes in the expression.)
+
+> [!IMPORTANT]
+> Due to the `x - x` term, any components of `x` being infinite will result in a `NaN` value propagating, making the result `(NaN, NaN, NaN)`.
+> Because of this, this function **will not properly handle or preserve the difference between different undefined types in point inputs**, as they cause the entire result become `NaN` in this term.
+> This may be fixed in the future if a better solution or patch is found.
+
+Finally, it is time to put it all together. First, we take the magnitudes of each component of `x` and put them in a point: `(|(1,0,0) * x|, |(0,1,0) * x|, |(0,0,1) * x|)`. Second, we get the sign of every component of `x` in the form of positive or negative zeroes: `(((0,0,0) * x) * x) * ((x - x) * x)`. Next, we divide each of these zeroes from 1 to get positive or negative `∞`, making detecting sign easier: `(1/s.x, 1/s.y, 1/s.z) with s = (((0,0,0) * x) * x) * ((x - x) * x)`. Then, we use the `sign` function to convert these entries to either `-1` or `1`: `(sign(1/s.x), sign(1/s.y), sign(1/s.z)) with s = (((0,0,0) * x) * x) * ((x - x) * x)`. And finally, we multiply these signs by the magnitudes we found at the start, giving the final formula of `convertTo3DPoint(x) = (sign(1/s.x) * |(1,0,0) * x|, sign(1/s.y) * |(0,1,0) * x|, sign(1/s.z) * |(0,0,1) * x|) with s = (((0,0,0) * x) * x) * ((x - x) * x)`. For completeness, the normal point version of this is `convertToPoint(x) = (sign(1/s.x) * |(1,0) * x|, sign(1/s.y) * |(0,1) * x|) with s = (((0,0) * x) * x) * ((x - x) * x)`.
