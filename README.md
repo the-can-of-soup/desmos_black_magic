@@ -203,4 +203,16 @@ The solution is to detect this edge case by detecting when `(0,0,0) * x` is `-0`
 
 Finally, it is time to put it all together. First, we take the magnitudes of each component of `x` and put them in a point: `(|(1,0,0) * x|, |(0,1,0) * x|, |(0,0,1) * x|)`. Second, we get the sign of every component of `x` in the form of positive or negative zeroes: `(((0,0,0) * x) * x) * ((x - x) * x)`. Next, we divide each of these zeroes from 1 to get positive or negative `∞`, making detecting sign easier: `(1/s.x, 1/s.y, 1/s.z) with s = (((0,0,0) * x) * x) * ((x - x) * x)`. Then, we use the `sign` function to convert these entries to either `-1` or `1`: `(sign(1/s.x), sign(1/s.y), sign(1/s.z)) with s = (((0,0,0) * x) * x) * ((x - x) * x)`. And finally, we multiply these signs by the magnitudes we found at the start, giving:
 
-Final formula: `convertTo3DPoint(x) = (sign(1/s.x) * |(1,0,0) * x|, sign(1/s.y) * |(0,1,0) * x|, sign(1/s.z) * |(0,0,1) * x|) with s = (((0,0,0) * x) * x) * ((x - x) * x)`. For completeness, the normal point version of this is `convertToPoint(x) = (sign(1/s.x) * |(1,0) * x|, sign(1/s.y) * |(0,1) * x|) with s = (((0,0) * x) * x) * ((x - x) * x)`.
+Final function: `convertTo3DPoint(x) = (sign(1/s.x) * |(1,0,0) * x|, sign(1/s.y) * |(0,1,0) * x|, sign(1/s.z) * |(0,0,1) * x|) with s = (((0,0,0) * x) * x) * ((x - x) * x)`. For completeness, the normal point version of this is `convertToPoint(x) = (sign(1/s.x) * |(1,0) * x|, sign(1/s.y) * |(0,1) * x|) with s = (((0,0) * x) * x) * ((x - x) * x)`.
+
+### Converting Number/Point Inputs to Numbers
+![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
+
+This is the same as the previous entry, except the reverse; converting to a number rather than a point or 3D point. Because of this, I will skip most of the explanation.
+
+Basically we just take the same `(x - x) * x` expression from that entry, except now use it to get the sign of numbers. For number `x`, this evaluates to `0 * x`, or `0` for nonnegative `x` and `-0` for negative `x`. For point `x`, this evaluates to `(0,0,0) * x`, which is a dot product, so it results in some number. Either way, we divide from `1` and use the `sign` function, giving `sign(1 / ((x - x) * x))`. For number `x`, the inner part is `∞` or `-∞` based on sign, meaning after `sign`, it is `1` or `-1`; for point `x`, this is some number. Then, we use `|x|` to get the magnitude of `x`. For number `x`, this is the absolute value of `x`. For point `x`, this is the magnitude of the vector with its coordinates. Finally, we multiply the two, so that in the number case, the sign is restored after the absolute value. For the point case, this is multiplying two numbers, so it also results in a number.
+
+Final function: `convertFrom3DPoint(x) = sign(1 / ((x - x) * x)) * |x|`
+
+> [!TIP]
+> This function works for both normal points and 3D points, because nowhere in it does it use a feature limited to one of the two.
