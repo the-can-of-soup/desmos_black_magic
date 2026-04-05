@@ -213,7 +213,7 @@ This is the same as the previous entry, except the reverse; converting to a numb
 
 Basically we just take the same `(x - x) * x` expression from that entry, except now use it to get the sign of numbers. For number `x`, this evaluates to `0 * x`, or `0` for nonnegative `x` and `-0` for negative `x`. For point `x`, this evaluates to `(0,0,0) * x`, which is a dot product, so it results in some number. Either way, we divide from `1` and use the `sign` function, giving `sign(1 / ((x - x) * x))`. For number `x`, the inner part is `∞` or `-∞` based on sign, meaning after `sign`, it is `1` or `-1`; for point `x`, this is some number. Then, we use `|x|` to get the magnitude of `x`. For number `x`, this is the absolute value of `x`. For point `x`, this is the magnitude of the vector with its coordinates. Finally, we multiply the two, so that in the number case, the sign is restored after the absolute value. For the point case, this is multiplying two numbers, so it also results in a number.
 
-Final function: `convertFrom3DPoint(x) = sign(1 / ((x - x) * x)) * |x|`
+Final function: `convertFromPoint(x) = sign(1 / ((x - x) * x)) * |x|`
 
 > [!TIP]
 > This function works for both normal points and 3D points, because nowhere in it does it use a feature limited to one of the two.
