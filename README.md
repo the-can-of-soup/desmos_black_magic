@@ -1,5 +1,9 @@
 # Desmos Black Magic & Undocumented Features
 
+> [!NOTE]
+>
+> While Desmos has a few different calculator types, this document mainly focuses on the Desmos Graphing Calculator.
+
 Linked graph: [https://www.desmos.com/calculator/tlwypgbi04](https://www.desmos.com/calculator/tlwypgbi04)
 
 ### Table of Contents
@@ -25,6 +29,9 @@ Linked graph: [https://www.desmos.com/calculator/tlwypgbi04](https://www.desmos.
 * [Points & 3D Points](#points--3d-points)
   * [Converting Number/Point Inputs to Points](#converting-numberpoint-inputs-to-points) ![Magic Level: Insane](https://img.shields.io/badge/Magic_Level:-Insane-magenta?style=flat-square)
   * [Converting Number/Point Inputs to Numbers](#converting-numberpoint-inputs-to-numbers) ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
+* [Built-in Functions](#built-in-functions)
+  * [Fragile Functions](#fragile-functions)
+  * [List of Fragile Functions](#list-of-fragile-functions)
 
 ### Help
 If you need help related to anything in this document, you can [create a GitHub issue](https://github.com/the-can-of-soup/desmos_black_magic/issues).
@@ -45,7 +52,7 @@ There are a lot of different types in Desmos. While most of the time we only use
 | Type           | Example                             | Can be stored in lists?  | Can use [method notation](#method-notation)? | Supported [Attributes](#attribute-notation) | Notes |
 |----------------|-------------------------------------|--------------------------|----------------------------------------------|---------------------------------------------|-------|
 | Number         | `2`                                 | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     | `.real`, `.imag`                            |       |
-| Complex Number | `3 - 2i`                            | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     | `.real`, `.imag`                            | These can only be created when "Complex Mode" is enabled in the graph's settings. |
+| Complex Number | `3 - 2i`                            | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     | `.real`, `.imag`                            | These normally can only be created when "Complex Mode" is enabled in the graph's settings, however this can be bypassed with the use of [fragile functions](#fragile-functions). |
 | List           | `[1, 2, 3]`                         | <ul><li>- [ ] </li></ul> | <ul><li>- [x] </li></ul>                     |                                             |       |
 | Point          | `(1, 2)`                            | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     | `.x`, `.y`                                  |       |
 | 3D Point       | `(1, 2, 3)`                         | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     | `.x`, `.y`, `.z`                            |       |
@@ -54,6 +61,12 @@ There are a lot of different types in Desmos. While most of the time we only use
 | Polygon        | `polygon([(1, 2), (3, 4), (5, 6)])` | <ul><li>- [x] </li></ul> | <ul><li>- [x] </li></ul>                     |                                             |       |
 | Color          | `rgb(255, 0, 0)`                    | <ul><li>- [x] </li></ul> | <ul><li>- [ ] </li></ul>                     |                                             | When displaying a color or list of colors, Desmos will show a fake `undefined` text and error. To prevent this, simply assign the color or list of colors to a variable. |
 | Action         | `a -> 1`                            | <ul><li>- [ ] </li></ul> | N/A                                          |                                             | It is unknown whether method notation is supported for actions because there are no known functions that accept an action to test it with. |
+
+> [!TIP]
+>
+> There exist some more types that are not listed above that are only available via normal means in other calculator types. However, some of these other types may still be accessible in the Graphing Calculator via the use of [fragile functions](#fragile-functions).
+>
+> Maybe at some point in the future I will document all of these types here, but for now consider the above list of types unfinished.
 
 ### General Restrictions
 * Attempting to use a non-number value in any comparison results in an error (before applying [list substitution](#list-substitution)).
@@ -135,6 +148,10 @@ There are a few restrictions on lists in Desmos:
 * Variables may not be set to lists containing `NaN` via actions.
 
 ### List Substitution
+> [!NOTE]
+>
+> "List substitution" is also often referred to as "list broadcasting".
+
 Lists can be used to substitute other values in expressions (as long as the result would obey [list restrictions](#list-restrictions)). For example, the expression `a^3 + 1` could be replaced with `[1, 2, 3]^3 + [4, 5]` and still be valid syntax. Whenever a type error would be produced due to an argument not supporting lists (e.g. taking the logarithm of a list), instead Desmos will perform a list substitution.
 
 The way Desmos evaluates list substitutions is by iterating through all lists simulatenously until any of the lists are exhausted, and placing the results in a list. In the example, exponentiation comes before addition in the order of operations, so Desmos would first try to evaluate `[1, 2, 3]^3`. It will first evaluate `1^3`, then `2^3`, and finally `3^3`. The resulting list is `[1, 8, 27]`. Then, Desmos would see `[1, 8, 27] + [4, 5]`. Because Desmos iterates through all lists simultaneously, it will first calculate `1 + 4`, then `8 + 5`, but then the second list is exhausted, so it will stop. The final result is the list `[5, 13]`.
@@ -217,3 +234,171 @@ Final function: `convertFromPoint(x) = sign(1 / ((x - x) * x)) * |x|`
 
 > [!TIP]
 > This function works for both normal points and 3D points, because nowhere in it does it use a feature limited to one of the two.
+
+
+
+## Built-in Functions
+
+### Fragile Functions
+Fragile functions are hidden built-in functions that are not registered with the equation editor or renderer. This means that while they do exist and will function properly when in an equation, they do not appear in the list of built-in functions, they cannot be created by typing their name, nor do they render as functions; they instead show up as if you literally typed the name of the function as a bunch of variables multiplied together.
+
+Fragile functions can be used to access types that are normally only available in other calculator types, access complex numbers with complex mode disabled, and more.
+
+So how _do_ you use them?
+
+In Desmos, while the equation renderer displays equations in fancy math notation, really all equations are stored as a bunch of special character sequences. You can see this for yourself by copying an equation or part of an equation to your clipboard and then pasting it into a text editor. Built-in functions specifically are notated by a backslash `\` followed by the name of the built-in function.
+
+So to use a fragile function, you need to copy a backslash `\` followed by the name of the fragile function to your clipboard (this is the character sequence for the fragile function). However, simply pasting this into Desmos will not work, because after pasting, the fragile function will instantly dissolve (because the equation editor sees it as an invalid character sequence). To get around this, copy _multiple lines of text_ to your clipboard. For whatever reason, this bypasses the check, and the character sequence is directly pasted in.
+
+Whenever an equation that contains a fragile function is edited, the function will dissolve. Because of this, make sure you have the entire equation that you want already copied when you are pasting in a fragile function.
+
+### List of Fragile Functions
+
+| Name                                | Notes |
+|-------------------------------------|-------|
+| `rtxsqpone`                         | |
+| `rtxsqmone`                         | |
+| `hypot`                             | |
+| `logbase`                           | |
+| `factorial`                         | |
+| `polyGamma`                         | |
+| `area`                              | |
+| `perimeter`                         | |
+| `pointDet`                          | |
+| `pointDot`                          | |
+| `pointPerp`                         | |
+| `complexMultiply`                   | |
+| `segment`                           | |
+| `line`                              | |
+| `ray`                               | |
+| `vector`                            | |
+| `vectorThreeD`                      | |
+| `mathVector`                        | |
+| `mathVectorThreeD`                  | |
+| `vectorDisplacementAsPoint`         | |
+| `vectorThreeDDisplacementAsPoint`   | |
+| `basePointFromVector`               | |
+| `basePointFromVectorThreeD`         | |
+| `circle`                            | |
+| `center`                            | |
+| `radius`                            | |
+| `arc`                               | |
+| `arcCenter`                         | |
+| `arcFirstPoint`                     | |
+| `arcMiddlePoint`                    | |
+| `arcThirdPoint`                     | |
+| `arcOmega`                          | |
+| `undirectedAngleMarker`             | |
+| `directedAngleMarker`               | |
+| `directedCoterminalAngle`           | |
+| `undirectedCoterminalAngle`         | |
+| `supplement`                        | |
+| `directedAngleMarkerRawDelta`       | |
+| `undirectedAngleMarkerRawDelta`     | |
+| `directedAngleMarkerMultiplier`     | |
+| `undirectedAngleMarkerMultiplier`   | |
+| `polygonInteriorUndirectedAngles`   | |
+| `polygonInteriorDirectedAngles`     | |
+| `vertices`                          | |
+| `segments`                          | |
+| `scaleTangentTransformation`        | |
+| `scaleTangentPolygon`               | |
+| `scaleTangentSegment`               | |
+| `scaleTangentLine`                  | |
+| `scaleTangentRay`                   | |
+| `scaleTangentCircle`                | |
+| `scaleTangentArc`                   | |
+| `scaleTangentDirectedAngleMarker`   | |
+| `scaleTangentUndirectedAngleMarker` | |
+| `addTangentPolygon`                 | |
+| `addTangentSegment`                 | |
+| `addTangentSegmentThreeD`           | |
+| `addTangentLine`                    | |
+| `addTangentRay`                     | |
+| `addTangentVector`                  | |
+| `addTangentCircle`                  | |
+| `addTangentArc`                     | |
+| `addTangentTransformation`          | |
+| `addTangentDirectedAngleMarker`     | |
+| `addTangentUndirectedAngleMarker`   | |
+| `segmentGlider`                     | |
+| `segmentThreeDGlider`               | |
+| `lineGlider`                        | |
+| `rayGlider`                         | |
+| `circleGlider`                      | |
+| `arcGlider`                         | |
+| `polygonEdgeByParameter`            | |
+| `polygonGlider`                     | |
+| `chooseNonIncidentPoint`            | |
+| `circleCircleIntersection`          | |
+| `circleArcIntersection`             | |
+| `circleLineIntersection`            | |
+| `arcCircleIntersection`             | |
+| `arcArcIntersection`                | |
+| `arcLineIntersection`               | |
+| `lineCircleIntersection`            | |
+| `lineArcIntersection`               | |
+| `lineLineIntersection`              | |
+| `lineFromSegment`                   | |
+| `lineFromRay`                       | |
+| `parallel`                          | |
+| `perpendicular`                     | |
+| `rawTransform`                      | |
+| `rawTransformConj`                  | |
+| `transformWithoutTranslation`       | |
+| `transformScaleFactor`              | |
+| `translation`                       | |
+| `dilation`                          | |
+| `rotation`                          | |
+| `reflection`                        | |
+| `compose`                           | |
+| `inverse`                           | |
+| `transformPoint`                    | |
+| `transformSegment`                  | |
+| `transformLine`                     | |
+| `transformRay`                      | |
+| `transformVector`                   | |
+| `transformCircle`                   | |
+| `transformArc`                      | |
+| `transformPolygon`                  | |
+| `transformAngleMarker`              | |
+| `transformDirectedAngleMarker`      | |
+| `distanceThreeD`                    | |
+| `segmentThreeD`                     | |
+| `triangle`                          | |
+| `sphere`                            | |
+| `argmin`                            | |
+| `argmax`                            | |
+| `upperQuantileIndex`                | |
+| `lowerQuantileIndex`                | |
+| `quartileIndex`                     | |
+| `upperQuartileIndex`                | |
+| `lowerQuartileIndex`                | |
+| `normalcdf`                         | |
+| `normalpdf`                         | |
+| `binomcdf`                          | |
+| `binompdf`                          | |
+| `poissoncdf`                        | |
+| `poissonpdf`                        | |
+| `uniformcdf`                        | |
+| `uniformpdf`                        | |
+| `invT`                              | |
+| `invPoisson`                        | |
+| `invBinom`                          | |
+| `invUniform`                        | |
+| `tpdf`                              | |
+| `tcdf`                              | |
+| `invNorm`                           | |
+| `normalSample`                      | |
+| `uniformSample`                     | |
+| `tSample`                           | |
+| `poissonSample`                     | |
+| `binomSample`                       | |
+| `validateRangeLength`               | |
+| `validateSampleCount`               | |
+| `select`                            | |
+| `sortPerm`                          | |
+| `elementsAt`                        | |
+| `uniquePerm`                        | |
+| `restriction`                       | |
+| `restrictionToBoolean`              | |
