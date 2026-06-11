@@ -135,7 +135,7 @@ The only method I know to differentiate `0` and `-0` is by dividing them from a 
 ## Complex Numbers
 
 ### Overview
-Complex numbers have a real and imaginary component, both of which are numbers. This means the real and imaginary components can have separate number types. However, there are some weird behaviors I have noticed that I can't fully explain. First, whenever any undefined number is expected to be in the imaginary component, or `NaN` is expected in the real component, the entire complex number becomes `NaN - NaN i`. This implies that the sign of the imaginary component is stored separately from the imaginary component itself, as `-NaN` isn't an actual value that can exist. When `.imag` is used, `NaN` is returned, confirming that `-NaN` doesn't exist.
+Complex numbers have a real and imaginary component, both of which are numbers. This means the real and imaginary components can have separate number types. However, there are some weird behaviors I have noticed that I can't fully explain. First, whenever any undefined number is expected to be in the imaginary component, or `NaN` is expected in the real component, the entire complex number becomes `NaN - NaN i`. This implies that the sign of the imaginary component is stored separately from the imaginary component itself, or the `-` sign is a graphical bug, as `-NaN` isn't an actual value that can exist. When `.imag` is used, `NaN` is returned, confirming that `-NaN` doesn't exist.
 
 However, infinite real components appear to work properly. This means that `∞ + i` works as expected, but `0/0 + i` and `∞i` just collapse to `NaN - NaN i`.
 
