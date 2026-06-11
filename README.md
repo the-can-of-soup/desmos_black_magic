@@ -125,7 +125,7 @@ However, infinite real components appear to work properly. This means that `∞ 
 Here are some properties of complex numbers:
 * `0 * z` and `-0 * z` will return a complex number, even though it would make sense to return a regular number.
 * `z / ∞` and `-z / -∞` will return the complex number `0`, but unlike regular numbers, `z / -∞` and `-z / ∞` will also return the complex number `0` (instead of `-0`).
-* 
+
 ### Differentiating Undefined Numbers
 ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
 
