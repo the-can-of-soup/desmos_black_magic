@@ -23,6 +23,7 @@ Linked graph: [https://www.desmos.com/calculator/tlwypgbi04](https://www.desmos.
   * [Differentiating Undefined Numbers](#differentiating-undefined-numbers) ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
   * [Differentiating Negative 0](#differentiating-negative-0) ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
 * [Complex Numbers](#complex-numbers)
+  * [Overview](#overview)
   * [Differentiating real number R vs complex number R±0i](#differentiating-real-number-r-vs-complex-number-r0i) ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
 * [Lists](#lists)
   * [List Restrictions](#list-restrictions)
@@ -119,15 +120,6 @@ Here are some more properties of `-0`:
 * With "Complex Mode" enabled, `-0 + ni` returns `0 + ni` for all nonnegative `n` and `-0 + ni` for all negative `n`. `-0` counts as negative here.
 * With "Complex Mode" enabled, `-0 * i` returns `-0 - 0i`.
 
-### Complex Numbers
-Complex numbers have a real and imaginary component, both of which are numbers. This means the real and imaginary components can have separate number types. However, there are some weird behaviors I have noticed that I can't fully explain. First, whenever any undefined number is expected to be in the imaginary component, or `NaN` is expected in the real component, the entire complex number becomes `NaN - NaN i`. This implies that the sign of the imaginary component is stored separately from the imaginary component itself, as `-NaN` isn't an actual value that can exist. When `.imag` is used, `NaN` is returned, confirming that `-NaN` doesn't exist.
-
-However, infinite real components appear to work properly. This means that `∞ + i` works as expected, but `0/0 + i` and `∞i` just collapse to `NaN - NaN i`.
-
-Here are some properties of complex numbers:
-* `0 * z` and `-0 * z` will return a complex number, even though it would make sense to return a regular number.
-* `z / ∞` and `-z / -∞` will return the complex number `0`, but unlike regular numbers, `z / -∞` and `-z / ∞` will also return the complex number `0` (instead of `-0`).
-
 ### Differentiating Undefined Numbers
 ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
 
@@ -141,6 +133,15 @@ The only method I know to differentiate `0` and `-0` is by dividing them from a 
 
 
 ## Complex Numbers
+
+### Overview
+Complex numbers have a real and imaginary component, both of which are numbers. This means the real and imaginary components can have separate number types. However, there are some weird behaviors I have noticed that I can't fully explain. First, whenever any undefined number is expected to be in the imaginary component, or `NaN` is expected in the real component, the entire complex number becomes `NaN - NaN i`. This implies that the sign of the imaginary component is stored separately from the imaginary component itself, as `-NaN` isn't an actual value that can exist. When `.imag` is used, `NaN` is returned, confirming that `-NaN` doesn't exist.
+
+However, infinite real components appear to work properly. This means that `∞ + i` works as expected, but `0/0 + i` and `∞i` just collapse to `NaN - NaN i`.
+
+Here are some properties of complex numbers:
+* `0 * z` and `-0 * z` will return a complex number, even though it would make sense to return a regular number.
+* `z / ∞` and `-z / -∞` will return the complex number `0`, but unlike regular numbers, `z / -∞` and `-z / ∞` will also return the complex number `0` (instead of `-0`).
 
 ### Differentiating real number R vs complex number R±0i
 _Written by [@marralesfios](https://github.com/marralesfios)_
