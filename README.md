@@ -136,6 +136,10 @@ There are a few properties that can be used to differentiate between defined and
 
 The only method I know to differentiate `0` and `-0` is by dividing them from a nonzero `n`, which will produce either `Infinity` or `-Infinity`. The easiest check is `1 / n > 0`, which will be true for `0` and false for `-0`, because `1 / -0 = -Infinity`.
 
+### Differentiating real number R vs complex number R±0i
+![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
+
+The important property we will rely on is that `∞ × 1 = ∞` but `∞ × (1 ± 0i) = NaN - NaN i`. We have to be a bit careful because `∞ × 0 = NaN`, but if we ensure the real component is not zero, then we can just multiply by infinity and plug into a NaN detector to tell whether a number is of complex type. That is: `{u = u: 0, 1} with u = ∞{x.real = 0: x + 1, x}` 
 
 
 ## Lists
