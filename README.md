@@ -25,7 +25,7 @@ Linked graph: [https://www.desmos.com/calculator/tlwypgbi04](https://www.desmos.
   * [Differentiating Negative 0](#differentiating-negative-0) ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
 * [Complex Numbers](#complex-numbers)
   * [Overview](#overview)
-  * [Differentiating real number R vs complex number R±0i](#differentiating-real-number-r-vs-complex-number-r0i) ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
+  * [Differentiating Real Number `a` From Complex Numbers Including `a ± 0i`](#differentiating-real-number-a-from-complex-numbers-including-a--0i) ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
 * [Lists](#lists)
   * [List Restrictions](#list-restrictions)
   * [List Substitution](#list-substitution)
@@ -145,15 +145,23 @@ However, infinite real components appear to work properly. This means that `∞ 
 Here are some properties of complex numbers:
 * `0 * z` and `-0 * z` will return a complex number, even though it would make sense to return a regular number.
 * `z / ∞` and `-z / -∞` will return the complex number `0`, but unlike regular numbers, `z / -∞` and `-z / ∞` will also return the complex number `0` (instead of `-0`).
+* Comparisons using the `=` operator between numbers or complex numbers `a` and `b` where at least one is complex return true if and only if `a.real = b.real` and `a.imag = b.imag`.
+* Comparisons using the strict `<` or `>` operator between numbers or complex numbers `a` and `b` where at least one is complex return true if and only if `a.imag = 0`, `b.imag = 0`, and `a.real $ b.real` where `$` is the operator used.
+* Comparisons using the loose `≤` or `≥` operator between numbers or complex numbers `a` and `b` work as you would expect: returning true if and only if `a = b` or `a $ b` where `$` is the corresponding strict comparator (`<` or `>`).
+* Any comparison with `NaN - NaN i` returns false (due to the properties above combined with [`NaN`'s comparison property](#differentiating-undefined-numbers)).
 
-### Differentiating real number R vs complex number R±0i
-_Written by [@marralesfios](https://github.com/marralesfios)_
+### Differentiating Real Number `a` From Complex Numbers Including `a ± 0i`
+_Written by [@marralesfios](https://github.com/marralesfios) with edits and additions by [@the-can-of-soup](https://github.com/the-can-of-soup)_
 
 ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
 
-The important property we will rely on is that `∞ × 1 = ∞` but `∞ × (1 ± 0i) = NaN - NaN i`. We have to be a bit careful because `∞ × 0 = NaN`, but if we ensure the real component is not zero, then we can just multiply by infinity and plug into a NaN detector to tell whether a number is of complex type. That is: `{u = u: 0, 1} with u = ∞{x.real = 0: x + 1, x}` 
+We want to build a function `isComplex(x)` that returns `1` if `x` is a complex number, or `0` if `x` is a non-complex number, even correctly differentiating when `x.imag` is zero. We can trivially differentiate complex numbers where `x.imag` is nonzero using `isComplex(x) = {x.imag = 0: 0, 1}`, so the rest of the problem is differentiating where `x.imag = 0`.
 
+The important property we will rely on is that for real nonzero `a`, `∞ * a` is `±∞`, but `∞ * (a ± 0i)` is `NaN - NaN i`. This is because `∞` gets distributed to both the real and imaginary part, but when it distributes to the imaginary part, we get `∞ * ±0`, which is `NaN`, causing the result to collapse to `NaN - NaN i`. We have to be a bit careful because `∞ * a` is `NaN` if `a` is zero, but if we ensure the real component is not zero, this is resolved, so then we can just multiply by `∞` and plug into a [`NaN` detector](#differentiating-undefined-numbers) to tell whether a number is of complex type.
 
+We can ensure that the real component is not zero by adding `1` in that case: `{x.real = 0: x + 1, x}`. Next, we multiply by `∞`, which will differentiate the two types: `∞ * {x.real = 0: x + 1, x}`. Now we use the property that `u = u` is false if and only if `u` is `NaN` or `NaN - NaN i` to check if the resulting value is `NaN - NaN i`. All combined, this lets us differentiate complex numbers where `x.imag` is zero using `isComplex(x) = {u = u: 0, 1} with u = ∞ * {x.real = 0: x + 1, x}`.
+
+Finally, we can combine this with our trivial logic from the start to get the final function: `isComplex(x) = {x.imag = 0: {u = u: 0, 1} with u = ∞ * {x.real = 0: x + 1, x}, 1}`.
 
 ## Lists
 
@@ -187,7 +195,7 @@ We want to create a function `isListOfNumbers(x)` that returns `1` if `x` is a l
 
 The first step is to detect any lists that don't have exactly 1 item, which is fairly easy. We can use `join([], x)` to convert the value to a list. After converting to a list, if `x` is a number, we will get the list `[x]`. If `x` is a list, we will just get `x` back again. We then check the length of this list. If it is anything but 1, we immediately know that `x` is a list. So our function so far is: `isListOfNumbers(x) = {join([], x).length = 1: ..., 1}`.
 
-The next step is to address the `...` in our function. If the length of `join([], x)` is 1, we know that `x` is either a number or a list of length 1. Differentiating the two is the hardest part of this function. For this, I use list substitution. If `x` is a number, evaluating `{x = [0, 0]: 0, 0}` will substitute each element of the list `[0, 0]` into the condition, and end up with two responses. However, if `x` is a list of length 1, `x` will now be *shorter than `[0, 0]`*, and so the Desmos list substitution algorithm will only substitute values until `x` is exhausted. Therefore, we only get one response, checking if the first element in `x` equals `0`. So the final step is to take this result and check its length. If it is `1`, we know `x` is a list, and if it is `2`, we know `x` is a number.
+The next step is to address the unfinished part `...` in our function. If the length of `join([], x)` is 1, we know that `x` is either a number or a list of length 1. Differentiating the two is the hardest part of this function. For this, I use list substitution. If `x` is a number, evaluating `{x = [0, 0]: 0, 0}` will substitute each element of the list `[0, 0]` into the condition, and end up with two responses. However, if `x` is a list of length 1, `x` will now be *shorter than `[0, 0]`*, and so the Desmos list substitution algorithm will only substitute values until `x` is exhausted. Therefore, we only get one response, checking if the first element in `x` equals `0`. So the final step is to take this result and check its length. If it is `1`, we know `x` is a list, and if it is `2`, we know `x` is a number.
 
 So our final function is: `isListOfNumbers(x) = {join([], x).length = 1: {{x = [0, 0]: 0, 0}.length = 2: 0, 1}, 1}`.
 
@@ -233,7 +241,7 @@ The solution is to detect this edge case by detecting when `(0,0,0) * x` is `-0`
 
 > [!IMPORTANT]
 > Due to the `x - x` term, any components of `x` being infinite will result in a `NaN` value propagating, making the result `(NaN, NaN, NaN)`.
-> Because of this, this function **will not properly handle or preserve the difference between different undefined types in point inputs**, as they cause the entire result become `NaN` in this term.
+> Because of this, this function **will not properly handle or preserve the difference between different undefined types in point inputs**, as they cause the entire result to become `NaN` in this term.
 > This may be fixed in the future if a better solution or patch is found.
 
 Finally, it is time to put it all together. First, we take the magnitudes of each component of `x` and put them in a point: `(|(1,0,0) * x|, |(0,1,0) * x|, |(0,0,1) * x|)`. Second, we get the sign of every component of `x` in the form of positive or negative zeroes: `(((0,0,0) * x) * x) * ((x - x) * x)`. Next, we divide each of these zeroes from 1 to get positive or negative `∞`, making detecting sign easier: `(1/s.x, 1/s.y, 1/s.z) with s = (((0,0,0) * x) * x) * ((x - x) * x)`. Then, we use the `sign` function to convert these entries to either `-1` or `1`: `(sign(1/s.x), sign(1/s.y), sign(1/s.z)) with s = (((0,0,0) * x) * x) * ((x - x) * x)`. And finally, we multiply these signs by the magnitudes we found at the start, giving:
