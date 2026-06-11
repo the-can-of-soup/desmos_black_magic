@@ -155,7 +155,7 @@ _Written by [@marralesfios](https://github.com/marralesfios) with edits and addi
 
 ![Magic Level: Easy](https://img.shields.io/badge/Magic_Level:-Easy-green?style=flat-square)
 
-We want to build a function `isComplex(x)` that returns `1` if `x` is a complex number, or `0` if `x` is a non-complex number, even correctly differentiating when `x.imag` is zero. We can trivially differentiate complex numbers where `x.imag` is nonzero using `isComplex(x) = {x.imag = 0: 0, 1}`, so the rest of the problem is differentiating where `x.imag = 0`.
+We want to build a function `isComplex(x)` that returns `1` if `x` is a complex number, or `0` if `x` is a non-complex number, even correctly differentiating when `x.imag` is zero. We can trivially differentiate complex numbers where `x.imag` is nonzero using `isComplex(x) = {x.imag = 0: 0, 1}`, so the rest of the problem is differentiating when `x.imag = 0`.
 
 The important property we will rely on is that for real nonzero `a`, `∞ * a` is `±∞`, but `∞ * (a ± 0i)` is `NaN - NaN i`. This is because `∞` gets distributed to both the real and imaginary part, but when it distributes to the imaginary part, we get `∞ * ±0`, which is `NaN`, causing the result to collapse to `NaN - NaN i`. We have to be a bit careful because `∞ * a` is `NaN` if `a` is zero, but if we ensure the real component is not zero, this is resolved, so then we can just multiply by `∞` and plug into a [`NaN` detector](#differentiating-undefined-numbers) to tell whether a number is of complex type.
 
