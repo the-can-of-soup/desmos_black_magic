@@ -1,5 +1,6 @@
 # Desmos Black Magic & Undocumented Features
-_Written primarily by [@the-can-of-soup](https://github.com/the-can-of-soup) with contributions from [@Dicuo](https://github.com/Dicuo/) and [@marralesfios](https://github.com/marralesfios)_
+_Written primarily by [@the-can-of-soup](https://github.com/the-can-of-soup) with contributions from [@Dicuo](https://github.com/Dicuo/) and [@marralesfios](https://github.com/marralesfios)._<br>
+_This document is entirely sourced from independent results found by these writers through trial and error._
 
 > [!NOTE]
 >
