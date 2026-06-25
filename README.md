@@ -428,3 +428,8 @@ Whenever an equation that contains a fragile function is edited, the function wi
 | `uniquePerm`                        | |
 | `restriction`                       | |
 | `restrictionToBoolean`              | |
+| `elementsAt`                        | |
+| `trapezoidalPartition`              | |
+| `peelableCoerceComplexToReal`       | |
+| `wirtingerEqualOrWarning`           | |
+| `validateRangeLength`               | |
