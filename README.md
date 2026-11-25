@@ -169,7 +169,7 @@ Finally, we can combine this with our trivial logic from the start to get the fi
 ### List Restrictions
 There are a few restrictions on lists in Desmos:
 * Lists may not have greater than 10,000 elements.
-* Lists must be of all the same type; i.e. you may not mix and match types.
+* Lists must be of all the same type, i.e. you may not mix and match types.
 * Lists may not contain lists or actions.
 * Variables may not be set to lists containing `NaN` via actions.
 
